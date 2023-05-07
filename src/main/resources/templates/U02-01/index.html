@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title th:text="#{COMMON.TITLE}">目標管理</title>
+	<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+	<link rel="stylesheet" th:href="@{/css/all.min.css}">
+</head>
+<script type="text/javascript" th:src="@{/js/jquery-3.6.4.min.js}"></script>
+<script type="text/javascript" th:inline="javascript">
+
+</script>
+
+<body>
+	<div class="container border mt-3">
+		<form method="get" action="/targetlists/" th:object="${form}">
+			<h5 class="block-title-info" th:text="#{U0201.SUBTITLE.SEARCH}"></h5>
+			<div class="row mt-3">
+				<label class="col-1" th:text="#{U0201.LABEL.TARGET}">目標</label>
+				<div class="col"><textarea class="form-control"></textarea></div>
+			</div>
+			<div class="row mt-3">
+				<label class="col-1 control-label" th:text="#{U0201.LABEL.PERIOD}">期限</label>
+				<div class="col-3">
+					<select class="form-control">
+						<option th:each="period : ${form.periodList}" th:value="${period.value}"
+							th:text="${period.text}" th:selected="${period.value == selectedValue}">></option>
+					</select>
+				</div>
+			</div>
+			<div class="row mt-3 justify-content-end">
+				<div class="col-2 ">
+					<a class="btn " th:text="#{U0201.BUTTON.SEARCH}" th:href="@{/targetlists/search}">送信</a>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<script type="text/javascript" th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+
+</html>

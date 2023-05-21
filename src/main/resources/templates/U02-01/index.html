@@ -5,40 +5,242 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<title th:text="#{COMMON.TITLE}">目標管理</title>
-	<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
-	<link rel="stylesheet" th:href="@{/css/all.min.css}">
-</head>
-<script type="text/javascript" th:src="@{/js/jquery-3.6.4.min.js}"></script>
+	<link rel="stylesheet" th:href="@{/lib/css/bootstrap.min.css}">
+	<link href="https://use.fontawesome.com/releases/v6.4.0/css/all.css" rel="stylesheet">
+	<link rel="stylesheet" th:href="@{/lib/css/jquery-ui.min.css}">
+
+<script type="text/javascript" th:src="@{/lib/js/bootstrap.bundle.min.js}"></script>
+<script type="text/javascript" th:src="@{/lib/js/jquery-3.6.4.min.js}"></script>
+<script type="text/javascript" th:src="@{/lib/js/jquery-ui.min.js}"></script>
 <script type="text/javascript" th:inline="javascript">
 
+	$(function () {
+		$("#datepicker").datepicker({
+			dateFormat: 'yy-mm-dd',
+			changeYear: true,  // 年選択プルダウン
+			changeMonth: true,  // 月選択プルダウン
+			buttonImageOnly: true,
+			showOn: "both",
+			buttonImage:/*[[@{/images/calendar.svg}]]*/
+	    });
+
+		$("#datepicker2").datepicker({
+			dateFormat: 'yy-mm-dd',
+			changeYear: true,  // 年選択プルダウン
+			changeMonth: true,  // 月選択プルダウン
+			buttonImageOnly: true,
+			showOn: "both",
+			buttonImage:/*[[@{/images/calendar.svg}]]*/
+	    });
+
+		//期限入力欄の表示切り替え
+		$("#selectPeriod").change(function () {
+			if ($(this).val() == 3) {
+				$(".dateArea").removeClass("displayOff");
+			} else {
+				$(".dateArea").addClass("displayOff");
+			}
+		});
+
+		//スライドトグル機能
+		$(".toggleButton").click(function () {
+			let promise = new Promise((resolve, reject) => { 
+				$(this).parents(".target").find(".stepList").slideToggle(250);
+			})
+			promise.then(() => { 
+				$(this).toggleClass("toggle-after");
+			})
+		});
+	});
+
+
 </script>
+<style type="text/css">
+img.ui-datepicker-trigger {
+  text-align: left!important;
+  cursor: pointer;
+  margin: .375rem !important;
+  height: 1.5rem;
+  flex: 0 0 auto;
+  width: 4.33333333%;
+}
+
+.input-accept-date {
+  width: 10rem;
+  display: inline-block;
+}
+
+.ui-datepicker-calendar thead {
+  background: rgb(245, 245, 245);
+  border-bottom: 1px solid rgb(191, 191, 191);
+}
+
+.ui-datepicker table {
+  border: 1px solid rgb(77, 144, 254);
+}
+
+
+.ui-icon-circle-triangle-e {
+  background-position: top;
+}
+
+.ui-icon-circle-triangle-w {
+  background-position: top;
+}
+
+.ui-widget-header {
+  border: 1px solid white;
+  background: white;
+  color: #333;
+  font-weight: normal;
+}
+
+.ui-state-default {
+  border: none !important;
+  background: white !important;
+  color: black !important;
+}
+
+.ui-state-default:hover {
+  background-color: rgb(229, 236, 248) !important;
+}
+
+.ui-datepicker-prev, .ui-datepicker-next {
+  border: 1px solid transparent;
+}
+
+.ui-state-hover {
+  top: 2px !important;
+  cursor: pointer;
+}
+
+.ui-datepicker .ui-datepicker-next {
+  right: 1px;
+}
+
+.ui-datepicker .ui-datepicker-prev {
+  left: 1px !important;
+}
+
+.ui-state-active {
+  color: inherit !important;
+  background-color: rgb(188, 205, 236) !important;
+}
+
+.ui-priority-secondary {
+  opacity: 0.5 !important;
+}
+
+.ui-datepicker td span, .ui-datepicker td a {
+  text-align: center;
+}
+
+.ui-datepicker th {
+  font-weight: normal;
+}
+
+.displayOff {
+  display: none;
+}
+
+.list-item-toggle{
+	width:40px;
+}
+
+.toggle-after {
+   transform: rotate( 90deg );
+}
+
+h1 {
+  /*線の種類（実線） 太さ 色*/
+  border-bottom: solid 3px black;
+}
+</style>
+
+
+</head>
 
 <body>
-	<div class="container border mt-3">
-		<form method="get" action="/targetlists/" th:object="${form}">
-			<h5 class="block-title-info" th:text="#{U0201.SUBTITLE.SEARCH}"></h5>
-			<div class="row mt-3">
-				<label class="col-1" th:text="#{U0201.LABEL.TARGET}">目標</label>
-				<div class="col"><textarea class="form-control"></textarea></div>
+	<h1 th:text="#{U0201.TITLE}"></h1>
+	<form method="post" action="/targetlists/search" th:object="${form}">
+		<div class="container border mt-3">
+			<!-- 検索エリア -->	
+			<h5 class="block-title-info mt-2" th:text="#{U0201.SUBTITLE.SEARCH}"></h5>
+			<div class="row mt-3 align-items-center">
+				<label class="col-1 text-end text-align-center" th:text="#{U0201.LABEL.TARGET}">目標</label>
+				<div class="col"><textarea class="form-control" name="searchStr" maxlength="255"></textarea></div>
 			</div>
-			<div class="row mt-3">
-				<label class="col-1 control-label" th:text="#{U0201.LABEL.PERIOD}">期限</label>
-				<div class="col-3">
-					<select class="form-control">
+			<div class="row mt-3 align-items-center">
+				<label class="col-1 text-end" th:text="#{U0201.LABEL.PERIOD}">期限</label>
+				<div class="col-2">
+					<select class="form-control " id="selectPeriod" name="selectedPeriod" >
 						<option th:each="period : ${form.periodList}" th:value="${period.value}"
-							th:text="${period.text}" th:selected="${period.value == selectedValue}">></option>
+							th:text="${period.text}" ></option>
 					</select>
 				</div>
-			</div>
-			<div class="row mt-3 justify-content-end">
-				<div class="col-2 ">
-					<a class="btn " th:text="#{U0201.BUTTON.SEARCH}" th:href="@{/targetlists/search}">送信</a>
+				<div class="col-9">
+					<div class="row displayOff dateArea">
+						<label class="col-1 text-end " th:text="#{U0201.LABEL.START}">始まり</label>
+					    <input class="col-1 datepicker form-control input-accept-date " type="text" id="datepicker" name="searchStart" maxlength="10">
+					<label class="col-1 text-center " th:text="#{U0201.LABEL.WAVE}">～</label>
+					<label class="col-1 text-end " th:text="#{U0201.LABEL.END}">終わり</label>
+						<input class="col-1 datepicker form-control input-accept-date " type="text" id="datepicker2" name="searchEnd" maxlength="10">
+
+					</div>
 				</div>
 			</div>
-		</form>
-	</div>
-
-	<script type="text/javascript" th:src="@{/js/bootstrap.bundle.min.js}"></script>
+			<div class="row mt-3 mb-3 justify-content-end">
+				<div class="col-1 ">
+					<p><input class="btn btn-primary" type="submit" th:value="#{U0201.BUTTON.SEARCH}" /></p>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 目標一覧 -->
+		<div class="container mt-3">
+			<div class="row">
+				<div class="col-2 ">
+					<h5 class="block-title-info " th:text="#{U0201.SUBTITLE.LISTS}"></h5>
+				</div>
+				<div class="col-2 offset-7 ">
+					<a class="btn btn-success" th:text="#{U0201.BUTTON.DOWNLOAD}" th:href="@{/targetlists/download/}">ダウンロード</a>
+				</div>
+				<div class="col-1 ">
+					<a class="btn btn-primary" th:text="#{U0201.BUTTON.REGIST}" th:href="@{/targetregist/}">登録</a>
+				</div>
+			</div>
+			
+			<div class="dflex flex-column justify-content-around">
+				<div class="target" th:if="${!#lists.isEmpty(form.targetList)}" th:each="target : ${form.targetList}">
+					<div class="list-group-item mt-3 ">
+						<ul class="row align-items-center">
+							<li class="col-1 list-inline-item list-item-toggle"><a class="toggleButton btn btn-light">＞</a></li>
+							<li class="col-1 list-inline-item text-end" th:text="#{U0201.LABEL.TARGET}">目標</li>
+							<li class="col-4 list-inline-item " th:text="${target.detail}">
+							<li class="col-1 list-inline-item text-end" th:text="#{U0201.LABEL.PERIOD}">期限</li>
+							<li class="col-1 list-inline-item text-nowrap" th:text="${target.period}">
+							<li class="col-1 list-inline-item text-end" th:text="#{U0201.LABEL.RESULT}">結果</li>
+							<li class="col-1 list-inline-item" th:text="${target.result}">
+							<li class="col-1 list-inline-item"> <a class="btn btn-danger" th:text="#{U0201.BUTTON.DELETE}" th:href="@{/targetlists/delete}">削除</a></li>
+						</ul>
+					</div>
+					<div class="stepList" style="display: none;" th:if="${!#lists.isEmpty(target.stepList)}" th:each="step : ${target.stepList}">
+						<div class="list-group-item">
+							<ul class="row align-items-center">
+								<li class="col-1 offset-1 list-inline-item text-end" th:text="#{U0201.LABEL.STEP}">手段</li>
+								<li class="col-4 list-inline-item" th:text="${step.detail}"></li>
+								<li class="col-1 list-inline-item text-end" th:text="#{U0201.LABEL.PERIOD}">期限</li>
+								<li class="col-1 list-inline-item text-nowrap" th:text="${step.period}"></li>
+								<li class="col-1 list-inline-item text-end" th:text="#{U0201.LABEL.RESULT}">結果</li>
+								<li class="col-1 list-inline-item" th:text="${step.result}"></li>
+								<li class="col-1 list-inline-item"> <a class="btn btn-danger" th:text="#{U0201.BUTTON.DELETE}" th:href="@{/targetlists/delete}">削除</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
 </body>
 
 </html>

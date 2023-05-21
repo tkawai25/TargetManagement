@@ -3,35 +3,38 @@ package com.example.demo.form;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.demo.dto.SelectBoxDto;
-import com.example.demo.dto.TargetDto;
+import com.example.demo.entity.SelectBoxEntity;
+import com.example.demo.entity.TargetEntity;
 
 import lombok.Data;
 
 @Data
 public class U0201Form {
 	/* 期限リスト */
-	private List<SelectBoxDto> periodList = new ArrayList<SelectBoxDto>();
+	private List<SelectBoxEntity> periodList = new ArrayList<SelectBoxEntity>();
 
 	/* 目標リスト */	
-	private List<TargetDto> targetList = new ArrayList<TargetDto>();
+	private List<TargetEntity> targetList = new ArrayList<TargetEntity>();
 	
 	/* 選択ユーザID */
 	private String selectedUserId = "1";
 	
-	public List<SelectBoxDto> getPeriodList() {
-		return periodList;
-	}
-
-	public void setPeriodList(List<SelectBoxDto> periodList) {
-		this.periodList = periodList;
-	}
+	/* 選択目標ID */
+	private String selectedTargetId;
 	
-	public List<TargetDto> getTargetList() {
-		return targetList;
-	}
-
-	public void setTargetList(List<TargetDto> targetList) {
-		this.targetList = targetList;
-	}
+	/* 選択手段ID */
+	private String slectedStepID;
+	
+	/* 検索文字列 */
+	private String searchStr;
+	
+	/* 選択検索期限 */
+	private String selectedPeriod;
+	
+	/* 期限検索：始まり */
+	private String searchStart;
+	
+	/* 期限検索：終わり */
+	private String searchEnd;
+	
 }

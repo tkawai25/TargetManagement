@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.TargetMapper">
+	<!-- 目標を10件検索 -->
+	<select id="selectTarget" resultMap="targetMap">
+
+		SELECT
+		    target_id
+		    , detail
+		    , period
+		    , result
+		    , updated_date 
+		FROM
+		    trn_target 
+		WHERE
+			
+		    user_id = #{user_id} 
+			<if test="search_str != null and search_str != ''">
+            	AND detail LIKE #{search_str}
+        	</if>
+        	<if test="start_date != null and start_date != ''">
+            	AND period &gt; #{start_date}
+            	OR period = #{start_date}
+        	</if>
+        	<if test="end_date != null and end_date != ''">
+            	AND period &lt; #{end_date}
+            	OR period = #{end_date}
+        	</if>
+		ORDER BY
+		    period DESC 
+		LIMIT
+		    #{limit};
+
+	</select>
+	<resultMap id="targetMap" type="com.example.demo.entity.TargetEntity">
+        <id column="target_id" property="targetId"></id>
+        <result column="detail" property="detail"></result>
+        <result column="period" property="period"></result>
+        <result column="result" property="result"></result>
+        <result column="updated_date" property="updatedDate"></result>
+        <collection property="stepList" column="target_id" javaType="ArrayList" select="selectStep">
+        </collection>
+    </resultMap>
+    
+    <!-- 取得できた目標IDで紐づく手段を全権取得 -->
+    <select id="selectStep" resultMap="stepMap">
+		SELECT
+		    step_id
+		    , detail
+		    , period
+		    , result
+		    , updated_date 
+		FROM
+		    trn_step 
+		WHERE
+		    target_id = #{target_id}
+		ORDER BY
+		    period DESC
+	</select>
+	<resultMap id="stepMap" type="com.example.demo.entity.StepEntity">
+        <id column="step_id" property="stepId"></id>
+        <result column="detail" property="detail"></result>
+        <result column="period" property="period"></result>
+        <result column="result" property="result"></result>
+        <result column="updated_date" property="updatedDate"></result>
+    </resultMap>
+</mapper>

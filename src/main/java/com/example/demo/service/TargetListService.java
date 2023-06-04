@@ -1,17 +1,18 @@
 package com.example.demo.service;
 
-import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.bean.SearchDateBean;
+import com.example.demo.bean.StepBean;
+import com.example.demo.bean.TargetBean;
 import com.example.demo.entity.SelectBoxEntity;
+import com.example.demo.entity.StepEntity;
 import com.example.demo.entity.TargetEntity;
 import com.example.demo.mapper.TargetMapper;
 
@@ -22,16 +23,16 @@ import lombok.RequiredArgsConstructor;
 public class TargetListService extends BaseService {
 
 	@Autowired
-	private TargetMapper trgetMapper;
+	private TargetMapper targetMapper;
 
-    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 	
 	/**
 	 * DBから目標と手段の一覧を取得して返却する。
 	 * @param userId
 	 * @return 
 	 */
-	public List<TargetEntity> inputData(String userId){
+	public List<TargetEntity> inputData(int userId){
 		return inputData(userId, null, null, null);
 	}
 	
@@ -44,9 +45,39 @@ public class TargetListService extends BaseService {
 	 * @param endDate
 	 * @return
 	 */
-	public List<TargetEntity> inputData(String userId, String searchStr, Date startDate, Date endDate){
+	public List<TargetEntity> inputData(int userId, String searchStr, String startDate, String endDate){
 	
-		return trgetMapper.selectTarget(toInt(userId), TARGET_LIMIT, searchStr, startDate, endDate);
+		return targetMapper.selectTarget(userId, TARGET_LIMIT, searchStr, startDate, endDate);
+	}
+	
+	/**
+	 * 排他チェック用
+	 * DBから目標IDと更新日時が一致するデータを取得して返却する。
+	 * @param targetId
+	 * @param updatedDate
+	 * @return
+	 */
+	private TargetEntity inpuDataExclusionTarget(int targetId, String updatedDate) {
+		return targetMapper.selectTargetExclusion(targetId, updatedDate);
+	}
+	
+	/**
+	 * 排他チェック用
+	 * DBから目標IDと更新日時が一致するデータを取得して返却する。
+	 * @param targetId
+	 * @param updatedDate
+	 * @return
+	 */
+	private StepEntity inpuDataExclusionStep(int stepId, String updatedDate) {
+		return targetMapper.selectStepExclusion(stepId, updatedDate);
+	}
+	
+	private void deleteTarget(int selectedId) {
+		targetMapper.deleteTarget(selectedId);
+	}
+	
+	private void deleteStep(int selectedId) {
+		targetMapper.deleteStep(selectedId);
 	}
 	
 	/**
@@ -70,8 +101,8 @@ public class TargetListService extends BaseService {
 	 * @param endDate
 	 * @return Map<String,Date>
 	 */
-	public Map<String,Date> getSearchCriteriaDate(String selectedPeriod, String startDate, String endDate){
-		 Map<String,Date> res = new HashMap<>();
+	public SearchDateBean getSearchCriteriaDate(String selectedPeriod, String startDate, String endDate){
+		SearchDateBean dateBean = new SearchDateBean();
 		 
 	        Calendar cal = Calendar.getInstance();
 			//検索条件期限を設定する
@@ -93,10 +124,61 @@ public class TargetListService extends BaseService {
 			        break;
 			}
 			
-			res.put("startDate", strToDate(startDate));
-			res.put("endDate", strToDate(endDate));
+			dateBean.setStartDate(startDate);
+			dateBean.setEndDate(endDate);
 			
-			return res;
+			return dateBean;
 
+	}
+	
+	/**
+	 * 排他チェック
+	 * 画面に表示されている目標・手段が取得できるか確認
+	 * @param targetList
+	 * @param stepList
+	 * @return true：変更なし false：変更あり
+	 * @throws NumberFormatException
+	 */
+	public boolean checkExclusion(List<TargetBean> targetList, List<StepBean> stepList) {
+		//目標が取得できるか確認
+		for(TargetBean bean : targetList) {
+			TargetEntity targerEnt = new TargetEntity();
+			targerEnt = inpuDataExclusionTarget(Integer.parseInt(bean.getSelectedId()),bean.getUpdatedDate());
+			
+			//取得できなければ更新されているため排他エラー
+			if(isNullOrEmpty(targerEnt)) {
+				return false;
+			}
+		}
+		
+		//手段が取得できるか確認
+		for(StepBean bean : stepList) {
+			StepEntity stepEnt = new StepEntity();
+			stepEnt = inpuDataExclusionStep(Integer.parseInt(bean.getSelectedId()),bean.getUpdatedDate());
+			
+			//取得できなければ更新されているため排他エラー
+			if(isNullOrEmpty(stepEnt)) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public void delete(String kbn, String selectedId) {
+		//選択されたデータが目標か手段で分岐
+		if(kbn.equals("0")) {
+			deleteTarget(selectedId);
+		}else {
+			deleteStep(selectedId);
+		}
+	}
+	
+	public void deleteTarget(String selectedId) {
+		deleteTarget(Integer.parseInt(selectedId));
+	}
+	
+	public void deleteStep(String selectedId) {
+		deleteStep(Integer.parseInt(selectedId));
 	}
 }

@@ -16,7 +16,7 @@
 
 	$(function () {
 		$("#datepicker").datepicker({
-			dateFormat: 'yy-mm-dd',
+			dateFormat: 'yy/mm/dd',
 			changeYear: true,  // 年選択プルダウン
 			changeMonth: true,  // 月選択プルダウン
 			buttonImageOnly: true,
@@ -25,7 +25,7 @@
 	    });
 
 		$("#datepicker2").datepicker({
-			dateFormat: 'yy-mm-dd',
+			dateFormat: 'yy/mm/dd',
 			changeYear: true,  // 年選択プルダウン
 			changeMonth: true,  // 月選択プルダウン
 			buttonImageOnly: true,
@@ -44,13 +44,63 @@
 
 		//スライドトグル機能
 		$(".toggleButton").click(function () {
-			let promise = new Promise((resolve, reject) => { 
-				$(this).parents(".target").find(".stepList").slideToggle(250);
-			})
-			promise.then(() => { 
-				$(this).toggleClass("toggle-after");
-			})
+			$(this).parents(".target").find(".stepList").slideToggle(250);
+			$(this).toggleClass("toggle-after");
 		});
+		
+		//削除ボタン押下時
+		$(".deleteButton").click(function() {
+			var valueArr = [];
+			//全目標のIDと更新日時を取得
+			$(".targetList").each(function(){
+				var targetMap = new Map();
+				targetMap.set("selectedId",$(this).find(".selectedId").val());
+				targetMap.set("updatedDate",$(this).find(".updatedDate").val());
+				var tmp = targetMap.entries(targetMap)
+				tmp = Array.from(tmp)
+				tmp = tmp.map(([k,v]) => ({[k]:v}))
+				var result = tmp.reduce((l,r) => Object.assign(l, r), {})
+				valueArr.push(result);
+			});
+			//配列からJsonに変換
+			targetJson = JSON.stringify(valueArr);
+			var valueArr = [];
+			//全手段のIDと更新日時を取得
+			$(".stepList").each(function(){
+				var stepMap = new Map();
+				stepMap.set("selectedId",$(this).find(".selectedId").val());
+				stepMap.set("updatedDate",$(this).find(".updatedDate").val());
+				var tmp = stepMap.entries(stepMap)
+				tmp = Array.from(tmp)
+				tmp = tmp.map(([k,v]) => ({[k]:v}))
+				var result = tmp.reduce((l,r) => Object.assign(l, r), {})
+				valueArr.push(result);
+			});
+			//配列からJsonに変換
+			stepJson = JSON.stringify(valueArr);
+			//削除対象のIDと区分を取得
+			let selectedDataId = $(this).parents(".list-group-item").find(".selectedId").val();
+			let kbn = $(this).parents(".list-group-item").find(".kbn").val();
+			let form = $("#formDelete");
+			//送信データをセット
+			$("#selectedDataId").val(selectedDataId);
+			$("#kbn").val(kbn);
+			$("#showTargetList").val(targetJson);
+			$("#showStepList").val(stepJson);
+			
+			//確認メッセージを表示
+			if(window.confirm(/*[[#{U0201.CONFIRM001}]]*/)) {
+				//遷移先を決めてサブミット
+				form.action = /*[[@{/targetlists/delete/}]]*/;
+				form.submit();
+				
+            } else {
+                return false;
+            }
+
+		});
+			
+		
 	});
 
 
@@ -162,7 +212,7 @@ h1 {
 
 <body>
 	<h1 th:text="#{U0201.TITLE}"></h1>
-	<form method="post" action="/targetlists/search" th:object="${form}">
+	<form id="formSearch" method="post" action="/targetlists/search" th:object="${form}">
 		<div class="container border mt-3">
 			<!-- 検索エリア -->	
 			<h5 class="block-title-info mt-2" th:text="#{U0201.SUBTITLE.SEARCH}"></h5>
@@ -196,6 +246,12 @@ h1 {
 			</div>
 		</div>
 		
+	</form>
+	<form id="formDelete" method="post" action="/targetlists/delete" th:object="${form}">
+		<!-- エラーメッセージ -->
+		<div class="alert alert-danger" role="alert" th:if="${!#lists.isEmpty(form.errMessage)}" th:each="msg : ${form.errMessage}">
+			<a th:text="${msg}"></a>
+		</div>
 		<!-- 目標一覧 -->
 		<div class="container mt-3">
 			<div class="row">
@@ -211,8 +267,8 @@ h1 {
 			</div>
 			
 			<div class="dflex flex-column justify-content-around">
-				<div class="target" th:if="${!#lists.isEmpty(form.targetList)}" th:each="target : ${form.targetList}">
-					<div class="list-group-item mt-3 ">
+				<div class="target" th:if="${!#lists.isEmpty(form.targetList)}" th:each="target : ${form.targetList}" th:name="targetList">
+					<div class="list-group-item mt-3 targetList">
 						<ul class="row align-items-center">
 							<li class="col-1 list-inline-item list-item-toggle"><a class="toggleButton btn btn-light">＞</a></li>
 							<li class="col-1 list-inline-item text-end" th:text="#{U0201.LABEL.TARGET}">目標</li>
@@ -221,8 +277,12 @@ h1 {
 							<li class="col-1 list-inline-item text-nowrap" th:text="${target.period}">
 							<li class="col-1 list-inline-item text-end" th:text="#{U0201.LABEL.RESULT}">結果</li>
 							<li class="col-1 list-inline-item" th:text="${target.result}">
-							<li class="col-1 list-inline-item"> <a class="btn btn-danger" th:text="#{U0201.BUTTON.DELETE}" th:href="@{/targetlists/delete}">削除</a></li>
+							<li class="col-1 list-inline-item"> <p><input class="btn btn-danger deleteButton" th:value="#{U0201.BUTTON.DELETE}" type="submit" ></p></li>
 						</ul>
+						<!-- 隠し項目 -->
+						<input class="selectedId" type="hidden" th:value="${target.targetId}">
+						<input class="updatedDate" type="hidden" th:value="${target.updatedDate}">
+						<input class="kbn" type="hidden" value=0>
 					</div>
 					<div class="stepList" style="display: none;" th:if="${!#lists.isEmpty(target.stepList)}" th:each="step : ${target.stepList}">
 						<div class="list-group-item">
@@ -233,11 +293,20 @@ h1 {
 								<li class="col-1 list-inline-item text-nowrap" th:text="${step.period}"></li>
 								<li class="col-1 list-inline-item text-end" th:text="#{U0201.LABEL.RESULT}">結果</li>
 								<li class="col-1 list-inline-item" th:text="${step.result}"></li>
-								<li class="col-1 list-inline-item"> <a class="btn btn-danger" th:text="#{U0201.BUTTON.DELETE}" th:href="@{/targetlists/delete}">削除</a></li>
+								<li class="col-1 list-inline-item"> <p><input class="btn btn-danger deleteButton" th:value="#{U0201.BUTTON.DELETE}" type="submit" ></p></li>
 							</ul>
+							<!-- 隠し項目 -->
+							<input class="selectedId" type="hidden" th:value="${step.stepId}">
+							<input class="updatedDate" type="hidden" th:value="${target.updatedDate}">
+							<input class="kbn" type="hidden" value=1>
 						</div>
 					</div>
 				</div>
+				<!-- 隠し項目 -->
+				<input type="hidden" id="selectedDataId" name="selectedDataId">
+				<input type="hidden" id="kbn" name="kbn">
+				<input type="hidden" id="showTargetList" name="showTargetList">
+				<input type="hidden" id="showStepList" name="showStepList">
 			</div>
 		</div>
 	</form>

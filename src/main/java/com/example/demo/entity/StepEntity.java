@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class StepEntity {
-	private String stepId;
+	private int stepId;
 	private String detail;
 	private String period;
 	private String result;

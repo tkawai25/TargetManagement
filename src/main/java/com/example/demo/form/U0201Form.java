@@ -9,7 +9,7 @@ import com.example.demo.entity.TargetEntity;
 import lombok.Data;
 
 @Data
-public class U0201Form {
+public class U0201Form extends BaseForm{
 	/* 期限リスト */
 	private List<SelectBoxEntity> periodList = new ArrayList<SelectBoxEntity>();
 
@@ -17,13 +17,16 @@ public class U0201Form {
 	private List<TargetEntity> targetList = new ArrayList<TargetEntity>();
 	
 	/* 選択ユーザID */
-	private String selectedUserId = "1";
+	private int selectedUserId = 1;
 	
-	/* 選択目標ID */
-	private String selectedTargetId;
+	/* 選択目標/手段ID */
+	private String selectedDataId;
 	
-	/* 選択手段ID */
-	private String slectedStepID;
+	/* 選択目標/手段区分 */
+	private String kbn;
+	
+	/* 更新日時 */
+	private String updatedDate;
 	
 	/* 検索文字列 */
 	private String searchStr;
@@ -37,4 +40,9 @@ public class U0201Form {
 	/* 期限検索：終わり */
 	private String searchEnd;
 	
+	/* 表示中目標リスト(Json) */
+	private String showTargetList;
+	
+	/* 表示中手段リスト(Json) */
+	private String showStepList;
 }

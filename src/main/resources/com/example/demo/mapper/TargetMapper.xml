@@ -19,12 +19,10 @@
             	AND detail LIKE #{search_str}
         	</if>
         	<if test="start_date != null and start_date != ''">
-            	AND period &gt; #{start_date}
-            	OR period = #{start_date}
+            	AND period <![CDATA[ >= ]]> &apos;${start_date}&apos;
         	</if>
         	<if test="end_date != null and end_date != ''">
-            	AND period &lt; #{end_date}
-            	OR period = #{end_date}
+            	AND period <![CDATA[ <= ]]> &apos;${end_date}&apos;
         	</if>
 		ORDER BY
 		    period DESC 
@@ -64,4 +62,63 @@
         <result column="result" property="result"></result>
         <result column="updated_date" property="updatedDate"></result>
     </resultMap>
+    
+	<select id="selectTargetExclusion" resultMap="targetExclusionMap">
+			SELECT
+		    target_id
+		    , detail
+		    , period
+		    , result
+		    , updated_date 
+		FROM
+		    trn_target 
+		WHERE
+			target_id = #{target_id}
+			AND updated_date = &apos;${updated_date}&apos;
+	</select>
+		<resultMap id="targetExclusionMap" type="com.example.demo.entity.TargetEntity">
+        <id column="target_id" property="targetId"></id>
+        <result column="detail" property="detail"></result>
+        <result column="period" property="period"></result>
+        <result column="result" property="result"></result>
+        <result column="updated_date" property="updatedDate"></result>
+    </resultMap>
+    
+     <select id="selectStepExclusion" resultMap="stepMap">
+		SELECT
+		    step_id
+		    , detail
+		    , period
+		    , result
+		    , updated_date 
+		FROM
+		    trn_step 
+		WHERE
+		    step_id = #{step_id}
+			AND updated_date = &apos;${updated_date}&apos;
+	</select>
+	<resultMap id="stepExclusionMap" type="com.example.demo.entity.StepEntity">
+        <id column="step_id" property="stepId"></id>
+        <result column="detail" property="detail"></result>
+        <result column="period" property="period"></result>
+        <result column="result" property="result"></result>
+        <result column="updated_date" property="updatedDate"></result>
+    </resultMap>
+
+    <delete id="deleteTarget">
+		DELETE 
+		FROM 
+			trn_target 
+		WHERE 
+			target_id = #{target_id}
+	</delete>
+	
+    <delete id="deleteStep">
+		DELETE 
+		FROM 
+			trn_step 
+		WHERE 
+			step_id = #{step_id}
+	</delete>
+    
 </mapper>

@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 public class TargetEntity {
-	private String targetId;
+	private int targetId;
 	private String detail;
 	private String period;
 	private String result;

@@ -1,35 +1,24 @@
 package com.example.demo.service;
 
-import java.sql.Date;
+import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Service;
+
+import com.example.demo.bean.StepBean;
+import com.example.demo.bean.StepListBean;
+import com.example.demo.bean.TargetBean;
+import com.example.demo.bean.TargetListBean;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
 public class BaseService {
 	
 	/** 目標取得件数 */
-	protected static final int TARGET_LIMIT = 10;
-	
-	/**
-	 * 引数のオブジェクトをStringにキャストして返却する。
-	 * 引数がnullまたは空文字の場合は空文字を返却する。
-	 * @param o
-	 * @return
-	 */
-	protected String toString(Object o) {
-		try {
-			if(Objects.isNull(o) || o=="") {
-				return "";
-			}else {
-				return (String) o;
-			}
-		}catch(Exception e){
-			return "";
-		}
-	}
+	public static final int TARGET_LIMIT = 10;
 	
 	/**
 	 * 引数がnullまたは空文字かどうか判別する。
@@ -45,39 +34,68 @@ public class BaseService {
 	}
 	
 	/**
-	 * 引数のStringをintがたにキャストして返却する。
+	 * 対象が目標か手段を判断する
+	 * @param targetId
+	 * @return true:目標 false:手段
 	 */
-	protected int toInt(String str) {
-        // 正規表現の設定
-        String regex = "^-?[0-9]*$";
-        Pattern p = Pattern.compile(regex);
-        Matcher m1 = p.matcher(str);
-		try {
-			if(m1.find()) {
-				return Integer.parseInt(str);
-			}else {
-				return -1;
-			}
-			
-		}catch(Exception e) {
-			return -1;
+	public boolean isTargetOrStep(String targetId) {
+		if(targetId == null | targetId == "") {
+			return false;
+		}else {
+			return true;
 		}
 	}
 	
 	/**
-	 * 文字列をsql.Date型に変換する
-	 * @param str 形式：yyyy-mm-dd
+	 * JSON文字列をTargetBeanに変換
+	 * ※共通化できるが時間がないのでこのまま
+	 * @param jsonStr
 	 * @return
+	 * @throws JsonMappingException
+	 * @throws IOException
 	 */
-	public Date strToDate(String str) {
-		try{	
-			if(str.equals(null) || str.isEmpty()) {
-				return null;
-			}else {
-				return Date.valueOf(str);
-			}
-		}catch(Exception e) {
+	public TargetListBean jsonToTargeListtBean(String jsonStr) throws JsonMappingException, IOException{
+		if(jsonStr == null){
+			//パラメータがnullの場合、nullを返します
 			return null;
 		}
+ 
+		//Jacksonのマッパーを生成
+		ObjectMapper mapper = new ObjectMapper();
+ 
+		//Json文字列をbeanリストに変換
+		List<TargetBean> beanList = mapper.readValue(jsonStr, new TypeReference<List<TargetBean>>() {});
+		//リストにつめる
+		TargetListBean beans = new TargetListBean();
+		beans.setTargetList(beanList);
+ 
+		return beans;
 	}
+	
+	/**
+	 * JSON文字列をStepBeanに変換
+	 * ※共通化できるが時間がないのでこのまま
+	 * @param jsonStr
+	 * @return
+	 * @throws JsonMappingException
+	 * @throws IOException
+	 */
+	public StepListBean jsonToStepListBean(String jsonStr) throws JsonMappingException, IOException{
+		if(jsonStr == null){
+			//パラメータがnullの場合、nullを返します
+			return null;
+		}
+ 
+		//Jacksonのマッパーを生成
+		ObjectMapper mapper = new ObjectMapper();
+ 
+		//Json文字列をbeanリストに変換
+		List<StepBean> beanList = mapper.readValue(jsonStr, new TypeReference<List<StepBean>>() {});
+		//リストにつめる
+		StepListBean beans = new StepListBean();
+		beans.setStepList(beanList);
+ 
+		return beans;
+	}
+	
 }

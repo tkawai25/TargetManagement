@@ -47,8 +47,36 @@ public class TargetListService extends BaseService {
 	 */
 	public List<TargetEntity> inputData(int userId, String searchStr, String startDate, String endDate){
 	
-		return targetMapper.selectTarget(userId, TARGET_LIMIT, searchStr, startDate, endDate);
+		return inputData(userId, TARGET_LIMIT, searchStr, startDate, endDate);
 	}
+	
+	/**
+	 * DBから目標と手段の一覧を取得して返却する。
+	 * 件数指定。(limitが0の場合は全件取得)
+	 * @param userId
+	 * @param limit
+	 * @return
+	 */
+	public List<TargetEntity> inputData(int userId, int limit){
+		
+		return inputData(userId, limit, null, null, null);
+	}
+	
+	/**
+	 * マッパーからSQLを実行する
+	 * @param userId
+	 * @param limit
+	 * @param searchStr
+	 * @param startDate
+	 * @param endDate
+	 * @return
+	 */
+	public List<TargetEntity> inputData(int userId, int limit, String searchStr, String startDate, String endDate){
+	
+		return targetMapper.selectTarget(userId, limit, searchStr, startDate, endDate);
+	}
+	
+
 	
 	/**
 	 * 排他チェック用

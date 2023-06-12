@@ -249,8 +249,10 @@ h1 {
 	</form>
 	<form id="formDelete" method="post" action="/targetlists/delete" th:object="${form}">
 		<!-- エラーメッセージ -->
-		<div class="alert alert-danger" role="alert" th:if="${!#lists.isEmpty(form.errMessage)}" th:each="msg : ${form.errMessage}">
-			<a th:text="${msg}"></a>
+		<div class="container mt-3">
+			<div class="alert alert-danger" role="alert" th:if="${!#lists.isEmpty(form.errMessage)}" th:each="msg : ${form.errMessage}">
+				<a th:text="${msg}"></a>
+			</div>
 		</div>
 		<!-- 目標一覧 -->
 		<div class="container mt-3">
@@ -259,10 +261,10 @@ h1 {
 					<h5 class="block-title-info " th:text="#{U0201.SUBTITLE.LISTS}"></h5>
 				</div>
 				<div class="col-2 offset-7 ">
-					<a class="btn btn-success" th:text="#{U0201.BUTTON.DOWNLOAD}" th:href="@{/targetlists/download/}">ダウンロード</a>
+					<a class="btn btn-success" th:text="#{U0201.BUTTON.DOWNLOAD}" th:href="@{/targetlists/download}">ダウンロード</a>
 				</div>
 				<div class="col-1 ">
-					<a class="btn btn-primary" th:text="#{U0201.BUTTON.REGIST}" th:href="@{/targetregist/}">登録</a>
+					<a class="btn btn-primary" th:text="#{U0201.BUTTON.REGIST}" th:href="@{/targetregist}">登録</a>
 				</div>
 			</div>
 			

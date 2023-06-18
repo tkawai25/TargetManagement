@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.bean.SearchDateBean;
 import com.example.demo.bean.StepBean;
@@ -71,6 +72,7 @@ public class TargetListService extends BaseService {
 	 * @param endDate
 	 * @return
 	 */
+	@Transactional
 	public List<TargetEntity> inputData(int userId, int limit, String searchStr, String startDate, String endDate){
 	
 		return targetMapper.selectTarget(userId, limit, searchStr, startDate, endDate);
@@ -85,6 +87,7 @@ public class TargetListService extends BaseService {
 	 * @param updatedDate
 	 * @return
 	 */
+	@Transactional
 	private TargetEntity inpuDataExclusionTarget(int targetId, String updatedDate) {
 		return targetMapper.selectTargetExclusion(targetId, updatedDate);
 	}
@@ -96,14 +99,25 @@ public class TargetListService extends BaseService {
 	 * @param updatedDate
 	 * @return
 	 */
+	@Transactional
 	private StepEntity inpuDataExclusionStep(int stepId, String updatedDate) {
 		return targetMapper.selectStepExclusion(stepId, updatedDate);
 	}
 	
+	/**
+	 * DBから目標を削除する
+	 * @param selectedId
+	 */
+	@Transactional
 	private void deleteTarget(int selectedId) {
 		targetMapper.deleteTarget(selectedId);
 	}
 	
+	/**
+	 * DBから手段を削除する
+	 * @param selectedId
+	 */
+	@Transactional
 	private void deleteStep(int selectedId) {
 		targetMapper.deleteStep(selectedId);
 	}

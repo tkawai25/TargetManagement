@@ -35,8 +35,6 @@ public class U0201Controller extends BaseController {
 	@Autowired
 	private TargetListService service;
 	
-	private static final String CONTENT_DISPOSITION_FORMAT = "attachment; filename=\"%s\"; filename*=UTF-8''%s";
-	
 	/**
 	 * 画面初期表示
 	 * @param model

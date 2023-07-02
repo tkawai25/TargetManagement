@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.U0201ControllerMapper">
+	<insert id="insertMstUser">
+		insert into mst_user(user_id,name,mail_address,password,insert_user,insert_date,updated_user,updated_date) 
+		values (#{user_id},#{name},#{mail_address},#{password},#{insert_user},&apos;${insert_date}&apos;,#{updated_user},&apos;${updated_date}&apos;);		
+	</insert>
+	
+	<insert id="insertTrnTarget">
+		insert into trn_target(target_id,detail,period,result,user_id,insert_user,insert_date,updated_user,updated_date)
+		values (#{target_id},#{detail},&apos;${period}&apos;,#{result},#{user_id},#{insert_user},&apos;${insert_date}&apos;,#{updated_user},&apos;${updated_date}&apos;);		
+	</insert>
+	
+	<insert id="insertTrnStep">
+		insert into trn_step(step_id,detail,period,result,target_id,insert_user,insert_date,updated_user,updated_date)
+		values (#{step_id},#{detail},&apos;${period}&apos;,#{result},#{target_id},#{insert_user},&apos;${insert_date}&apos;,#{updated_user},&apos;${updated_date}&apos;);
+	</insert>
+	
+</mapper>

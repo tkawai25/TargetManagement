@@ -8,5 +8,5 @@ import lombok.Data;
 @Data
 public class BaseForm {
 	private List<String> compMessage = new ArrayList<String>();
-	private List<String> errMessage = new ArrayList<String>();;
+	private List<String> errMessage = new ArrayList<String>();
 }

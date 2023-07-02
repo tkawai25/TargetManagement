@@ -1,6 +1,5 @@
 package com.example.demo.service;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,7 +10,6 @@ import com.example.demo.bean.StepListBean;
 import com.example.demo.bean.TargetBean;
 import com.example.demo.bean.TargetListBean;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -34,30 +32,16 @@ public class BaseService {
 	}
 	
 	/**
-	 * 対象が目標か手段を判断する
-	 * @param targetId
-	 * @return true:目標 false:手段
-	 */
-	public boolean isTargetOrStep(String targetId) {
-		if(targetId == null | targetId == "") {
-			return false;
-		}else {
-			return true;
-		}
-	}
-	
-	/**
 	 * JSON文字列をTargetBeanに変換
 	 * ※共通化できるが時間がないのでこのまま
 	 * @param jsonStr
 	 * @return
-	 * @throws JsonMappingException
-	 * @throws IOException
+	 * @throws Exception 
 	 */
-	public TargetListBean jsonToTargeListtBean(String jsonStr) throws JsonMappingException, IOException{
+	public TargetListBean jsonToTargeListtBean(String jsonStr) throws Exception{
 		if(jsonStr == null){
-			//パラメータがnullの場合、nullを返します
-			return null;
+			//パラメータがnullの場合、Exceptinoを投げる
+			throw new Exception();
 		}
  
 		//Jacksonのマッパーを生成
@@ -77,13 +61,12 @@ public class BaseService {
 	 * ※共通化できるが時間がないのでこのまま
 	 * @param jsonStr
 	 * @return
-	 * @throws JsonMappingException
-	 * @throws IOException
+	 * @throws Exception 
 	 */
-	public StepListBean jsonToStepListBean(String jsonStr) throws JsonMappingException, IOException{
+	public StepListBean jsonToStepListBean(String jsonStr) throws Exception{
 		if(jsonStr == null){
-			//パラメータがnullの場合、nullを返します
-			return null;
+			//パラメータがnullの場合、Exceptinoを投げる
+			throw new Exception();
 		}
  
 		//Jacksonのマッパーを生成

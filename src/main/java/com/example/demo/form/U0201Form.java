@@ -25,9 +25,6 @@ public class U0201Form extends BaseForm{
 	/* 選択目標/手段区分 */
 	private String kbn;
 	
-	/* 更新日時 */
-	private String updatedDate;
-	
 	/* 検索文字列 */
 	private String searchStr;
 	

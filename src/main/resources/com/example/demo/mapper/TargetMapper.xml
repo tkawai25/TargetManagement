@@ -25,7 +25,7 @@
             	AND period <![CDATA[ <= ]]> &apos;${end_date}&apos;
         	</if>
 		ORDER BY
-		    period DESC 
+		    period ASC 
 		<if test="limit != null and limit > 0">
 		LIMIT
 		    #{limit};
@@ -55,7 +55,7 @@
 		WHERE
 		    target_id = #{target_id}
 		ORDER BY
-		    period DESC
+		    period ASC
 	</select>
 	<resultMap id="stepMap" type="com.example.demo.entity.StepEntity">
         <id column="step_id" property="stepId"></id>

@@ -42,7 +42,7 @@ public class U0201Controller extends BaseController {
 	 * @return
 	 */
 	@GetMapping({ "/", "/index" })
-	public String show(Model model, U0201Form form) {
+	public String index(Model model, U0201Form form) {
 		//初期表時用の目標リストを取得
 		form.setTargetList(service.inputData(form.getSelectedUserId()));
 		
@@ -102,14 +102,14 @@ public class U0201Controller extends BaseController {
 			//排他チェック
 			if(!service.checkExclusion(targetListBean.getTargetList(),stepListBean.getStepList())) {
 				form.getErrMessage().add(getMsg("G0201.ERR001"));
-				return show(model,form);
+				return index(model,form);
 			}
 			
 			//削除実行
 			service.delete(form.getKbn(), form.getSelectedDataId());
 			
 			//初期表示
-			return show(model,form);
+			return index(model,form);
 	}
 	
 	/**

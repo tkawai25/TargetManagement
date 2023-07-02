@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.BaseControllerMapper">
+	<delete id="truncateMstUser">
+		DELETE 
+		FROM 
+			mst_user
+	</delete>
+    
+    <delete id="truncateTrnTarget">
+		DELETE 
+		FROM 
+			trn_target
+	</delete>
+	
+	<delete id="truncateTrnStep">
+		DELETE 
+		FROM 
+			trn_step
+	</delete>
+</mapper>
